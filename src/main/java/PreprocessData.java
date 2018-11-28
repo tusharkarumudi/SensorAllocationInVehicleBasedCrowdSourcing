@@ -8,19 +8,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class PreprocessData {
 
 
     private static final String CSV_FILE_PATH = "D:\\CourseWork\\Fall2018\\CSCI 8790\\buses.csv";
-    private Map<Integer,Map<String,Set<Map<String,Set<Coordinate>>>>> busesPerHour = new HashMap<>();
-    public Map<Integer,Map<String,Set<Coordinate>>> uniqueBusPerRoutePerHour=new HashMap<>();
+    private Map<Integer,Map<String,Set<Map<String, ArrayList<Coordinate>>>>> busesPerHour = new HashMap<>();
+    public static Map<Integer,Map<String,ArrayList<Coordinate>>> uniqueBusPerRoutePerHour=new HashMap<>();
     private LocalDateTime[] hours=new LocalDateTime[24];
-
+    public static Set<String> RouteIdBusId=new HashSet<>();
 
     public void getBusesPerHour() {
         try {
@@ -40,15 +37,15 @@ public class PreprocessData {
                     int direction = Integer.parseInt(csvRecord.get(3));
                     int hour=getHourRange(timestamp);
 //                    System.out.println("hour is "+hour+" for timestamp "+timestamp);
-                    Map<String,Set<Map<String,Set<Coordinate>>>> routeMap;
-                    Set<Map<String,Set<Coordinate>>> busSet;
-                    Map<String,Set<Coordinate>> busMap;
-                    Set<Coordinate> coordinates;
+                    Map<String,Set<Map<String,ArrayList<Coordinate>>>> routeMap;
+                    Set<Map<String,ArrayList<Coordinate>>> busSet;
+                    Map<String,ArrayList<Coordinate>> busMap;
+                    ArrayList<Coordinate> coordinates;
                     if(!busesPerHour.containsKey(hour)){
                        routeMap=new HashMap<>();
                         busSet=new HashSet<>();
                         busMap=new HashMap<>();
-                        coordinates=new HashSet<>();
+                        coordinates=new ArrayList<>();
                         coordinates.add(new Coordinate(lat,lon));
                         busMap.put(busIdStr,coordinates);
                         busSet.add(busMap);
@@ -59,14 +56,14 @@ public class PreprocessData {
                         if(!routeMap.containsKey(routeIdStr)){
                             busSet=new HashSet<>();
                             busMap=new HashMap<>();
-                            coordinates=new HashSet<>();
+                            coordinates=new ArrayList<>();
                             coordinates.add(new Coordinate(lat,lon));
                             busMap.put(busIdStr,coordinates);
                             busSet.add(busMap);
                             routeMap.put(routeIdStr,busSet);
                         } else {
-                            for(Map<String,Set<Coordinate>> map:routeMap.get(routeIdStr)){
-                                for(Map.Entry<String,Set<Coordinate>> entry:map.entrySet()){
+                            for(Map<String,ArrayList<Coordinate>> map:routeMap.get(routeIdStr)){
+                                for(Map.Entry<String,ArrayList<Coordinate>> entry:map.entrySet()){
                                     if(entry.getKey().equals(busIdStr)){
                                         entry.getValue().add(new Coordinate(lat,lon));
                                     }
@@ -85,19 +82,19 @@ public class PreprocessData {
 
     private void generateUniqueBusPerRoute(){
         System.out.println("generating uniquebuses");
-        Set<Coordinate> coordinates=new HashSet<>();
+        ArrayList<Coordinate> coordinates=new ArrayList<>();
         String routeId_BusId="";
         int hour=0;
         String  routeId="",busId="";
-        for(Map.Entry<Integer,Map<String,Set<Map<String,Set<Coordinate>>>>> hourEntry:busesPerHour.entrySet()){
+        for(Map.Entry<Integer,Map<String,Set<Map<String,ArrayList<Coordinate>>>>> hourEntry:busesPerHour.entrySet()){
             hour=hourEntry.getKey();
-            Map<String,Set<Map<String,Set<Coordinate>>>> routeEntryValue=hourEntry.getValue();
-            for(Map.Entry<String,Set<Map<String,Set<Coordinate>>>> routeEntry:routeEntryValue.entrySet()){
+            Map<String,Set<Map<String,ArrayList<Coordinate>>>> routeEntryValue=hourEntry.getValue();
+            for(Map.Entry<String,Set<Map<String,ArrayList<Coordinate>>>> routeEntry:routeEntryValue.entrySet()){
                 routeId=routeEntry.getKey();
-                Set<Map<String,Set<Coordinate>>> busSet=routeEntry.getValue();
+                Set<Map<String,ArrayList<Coordinate>>> busSet=routeEntry.getValue();
                 int maxSize=0;
-                for(Map<String,Set<Coordinate>> busMap:busSet){
-                    for(Map.Entry<String,Set<Coordinate>> buses:busMap.entrySet()){
+                for(Map<String,ArrayList<Coordinate>> busMap:busSet){
+                    for(Map.Entry<String,ArrayList<Coordinate>> buses:busMap.entrySet()){
                         int size=buses.getValue().size();
                         if(maxSize<size){
                             busId=buses.getKey();
@@ -107,14 +104,15 @@ public class PreprocessData {
                     }
                 }
             }
-            Map<String,Set<Coordinate>> uniqueBusesPerRouteWithCoordinates=new HashMap<>();
+            Map<String,ArrayList<Coordinate>> uniqueBusesPerRouteWithCoordinates=new HashMap<>();
             routeId_BusId=routeId+"_"+busId;
+            RouteIdBusId.add(routeId_BusId);
             uniqueBusesPerRouteWithCoordinates.put(routeId_BusId,coordinates);
             uniqueBusPerRoutePerHour.put(hour,uniqueBusesPerRouteWithCoordinates);
         }
         System.out.println("printing");
-        for(Map.Entry<Integer,Map<String,Set<Coordinate>>> busPerHour:uniqueBusPerRoutePerHour.entrySet()){
-            for(Map.Entry<String,Set<Coordinate>> bus:busPerHour.getValue().entrySet()){
+        for(Map.Entry<Integer,Map<String,ArrayList<Coordinate>>> busPerHour:uniqueBusPerRoutePerHour.entrySet()){
+            for(Map.Entry<String,ArrayList<Coordinate>> bus:busPerHour.getValue().entrySet()){
                 System.out.println(bus.getKey()+" "+bus.getValue());
             }
         }

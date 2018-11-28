@@ -9,10 +9,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class GenerateGrid {
-//    private float minLatLat = Float.MAX_VALUE, minLatLong = Float.MAX_VALUE;
-//    private float maxLatLat = Float.MIN_VALUE, maxLatLong = Float.MIN_VALUE;
-//    private float minLongLat = Float.MAX_VALUE, minLongLong = Float.MAX_VALUE;
-//    private float maxLongLat = Float.MIN_VALUE, maxLongLong = Float.MIN_VALUE;
     private float minLat=Integer.MAX_VALUE;
     private float maxLat=Integer.MIN_VALUE;
     private float minLong=Integer.MAX_VALUE;
