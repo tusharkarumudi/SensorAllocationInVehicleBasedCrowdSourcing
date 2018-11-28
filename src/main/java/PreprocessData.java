@@ -20,6 +20,7 @@ public class PreprocessData {
     public static Set<String> RouteIdBusId=new HashSet<>();
 
     public void getBusesPerHour() {
+        timeRanges();
         try {
             Reader reader = Files.newBufferedReader(Paths.get(CSV_FILE_PATH));
             CSVParser csvParser = new CSVParser(reader, CSVFormat.EXCEL);
@@ -119,6 +120,7 @@ public class PreprocessData {
     }
 
     private int getHourRange(LocalDateTime timestamp){
+        System.out.println(hours[23]);
         if(timestamp.isAfter(hours[23])){
             return 23;
         }
