@@ -18,7 +18,7 @@ public class GenerateGrid {
     private float minLong=Integer.MAX_VALUE;
     private float maxLong=Integer.MIN_VALUE;
     private static final String CSV_FILE_PATH = "D:\\CourseWork\\Fall2018\\CSCI 8790\\buses.csv";
-    private ArrayList<ArrayList<Coordinate>> coordinates=new ArrayList<ArrayList<Coordinate>>();
+    public ArrayList<ArrayList<Coordinate>> coordinates=new ArrayList<ArrayList<Coordinate>>();
 
 
     public static void main(String[] args) {
@@ -26,7 +26,6 @@ public class GenerateGrid {
        GenerateGrid gridSystem = new GenerateGrid();
        gridSystem.getMinMaxCoordinates();
        float stepSize=0.0001f;
-       gridSystem.generateGrid(stepSize);
     }
 
     private void getMinMaxCoordinates(){
@@ -61,7 +60,9 @@ public class GenerateGrid {
         System.out.println(maxLong);
     }
 
-    private void generateGrid(float stepSize) {
+    public void generateGridCoordinates() {
+        getMinMaxCoordinates();
+        float stepSize=0.0001f;
         float lon=minLong;
         while(lon < maxLong) {
             float lat = minLat;

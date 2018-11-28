@@ -18,11 +18,11 @@ public class PreprocessData {
 
     private static final String CSV_FILE_PATH = "D:\\CourseWork\\Fall2018\\CSCI 8790\\buses.csv";
     private Map<Integer,Map<String,Set<Map<String,Set<Coordinate>>>>> busesPerHour = new HashMap<>();
-    private Map<Integer,Map<String,Set<Coordinate>>> uniqueBusPerRoutePerHour=new HashMap<>();
+    public Map<Integer,Map<String,Set<Coordinate>>> uniqueBusPerRoutePerHour=new HashMap<>();
     private LocalDateTime[] hours=new LocalDateTime[24];
 
 
-    private void getBusesPerHour() {
+    public void getBusesPerHour() {
         try {
             Reader reader = Files.newBufferedReader(Paths.get(CSV_FILE_PATH));
             CSVParser csvParser = new CSVParser(reader, CSVFormat.EXCEL);
